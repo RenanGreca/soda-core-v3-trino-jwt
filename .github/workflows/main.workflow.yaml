@@ -181,6 +181,7 @@ jobs:
       - name: Run tests
         run: |
           uv sync --locked --all-packages --group dev
+          source .venv/bin/activate
 
           if [ "${{ matrix.module }}" = "sparkdf" ]; then
             sudo apt-get update
@@ -192,16 +193,16 @@ jobs:
           fi
 
           export TEST_DATASOURCE=${{ matrix.module }}
-          uv run python -m pytest -ra soda-tests/tests/features
+          python -m pytest -ra soda-tests/tests/features
           if [ "${{ matrix.module }}" = "postgres" ]; then
-            uv run python -m pytest -ra soda-tests/tests/components
+            python -m pytest -ra soda-tests/tests/components
           fi
-          uv run python -m pytest -ra soda-${{ matrix.module }}/tests
+          python -m pytest -ra soda-${{ matrix.module }}/tests
 
           if [ "${{ matrix.module }}" = "databricks" ]; then
             export DATABRICKS_CATALOG=hive_metastore
             echo "Changed DATABRICKS_CATALOG environment variable to hive_metastore"
-            uv run python -m pytest -ra soda-tests/tests/features
+            python -m pytest -ra soda-tests/tests/features
           fi
 
   define-matrix:
